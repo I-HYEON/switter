@@ -1,16 +1,23 @@
-import AppRouter from "./Router";
-import React, {useState,useEffect} from 'react'
-import authService from "../fBase";
+import AppRouter from "components/Router";
+import React, {useEffect, useState} from 'react'
+import {authService} from "myfirebase";
 
 function App() {
   const [init, setInit] = useState(false);
-  const [isLoggedIn,setIsLoggedIn] = useState(authService.currentUser);
+  const [isLoggedIn,setIsLoggedIn] = useState(false);
   useEffect(()=>{
-    authService.onAuthStateChanged((user) => console.log("왜안나오지?",user))
-  },[]);
+    authService.onAuthStateChanged((user)=>{
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+      setInit(true)
+    })
+  },[])
   return (
     <>
-      <AppRouter isLoggedIn={isLoggedIn}/>
+      {init? <AppRouter isLoggedIn={isLoggedIn}/>: "initializing..."}
       <footer>&copy; Switter {new Date().getFullYear()}</footer>
     </>
     
